@@ -22,21 +22,26 @@ const CreateBlog = () => {
     }
   };
 
-  const handleSubmit =async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Process form data here (e.g., send to API using FormData)
-    console.log('Submitted Data:', formData);
     try {
-      const response =await Api.post('/blog/create',formData,{
-        headers:{
-          'Content-Type':'multipart/form-data'
+      const response = await Api.post('/blog/create', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
         }
       })
-      console.log(response);
-      
+
+
+      setFormData({
+        title: '',
+        content: '',
+        image: null,
+      })
+
+      setPreview("")
     } catch (error) {
-     console.log(error);
-      
+      console.log(error);
+
     }
 
   };
@@ -44,7 +49,7 @@ const CreateBlog = () => {
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-md border border-slate-100">
       <h2 className="text-2xl font-bold text-slate-800 mb-6">Create New Blog Post</h2>
-      
+
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
           <label className="block text-sm font-semibold text-slate-700 mb-1">

@@ -32,6 +32,7 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
         { name: "Address", icon: <LuMessageSquareText />, path: "/dashboard/address" },
         { name: "Change Password", icon: <TbBrandGoogleAnalytics />, path: "/dashboard/change-password" },
         { name: "Create Blog", icon: <TbBrandGoogleAnalytics />, path: "/dashboard/create-blog" },
+        { name: "My Blogs", icon: <TbBrandGoogleAnalytics />, path: "/dashboard/my-blog" },
     ];
 
     const menuItems = user.role === 'admin' ? adminTabs : userTabs;

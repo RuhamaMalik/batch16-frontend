@@ -9,6 +9,8 @@ import ForgotPswd from '../pages/ForgotPswd';
 import ResetPaswd from '../pages/ResetPaswd';
 import AuthForm from '../components/AuthForm';
 import CreateBlog from '../components/dashboard/user/CreateBlog';
+import MyBlogs from '../components/dashboard/user/MyBlogs';
+import BlogDetail from '../components/BlogDetail';
 
 const router = createBrowserRouter([
     {
@@ -58,6 +60,18 @@ const router = createBrowserRouter([
             {
                 path:'create-blog',
                 element:<CreateBlog/>
+                
+            },
+              
+            {
+                path:'my-blog',
+                element:<MyBlogs/>
+                
+            },
+              
+            {
+                path:'blog/:id',
+                element:<BlogDetail/>
                 
             },
               
