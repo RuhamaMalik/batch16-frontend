@@ -15,6 +15,7 @@ import Blogs from '../components/dashboard/admin/Blogs';
 import Users from '../components/dashboard/admin/Users';
 import BlogsPage from '../pages/Blog';
 import AboutPage from '../pages/About';
+import PaymentSuccess from '../pages/PaymentSuccess';
 
 const router = createBrowserRouter([
     {
@@ -55,6 +56,12 @@ const router = createBrowserRouter([
                 path: 'about',
                 element: (
                     <AboutPage />
+                ),
+            },
+            {
+                path: 'payment-success',
+                element: (
+                    <PaymentSuccess />
                 ),
             },
 

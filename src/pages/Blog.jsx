@@ -29,26 +29,47 @@ const BlogsPage = () => {
         }
     };
 
-  const handleViewDetail = (blog) => {
-    if (!blog.isPaid) {
-        navigate(`/blog/${blog._id}`); 
-        return;
-    }
+    const handleViewDetail = async (blog) => {
+        if (!blog.isPaid) {
+            navigate(`/blog/${blog._id}`);
+            return;
+        }
 
-    if (!currentUserId) {
-        alert("🔒 Please login first to access premium blogs!");
-        return;
-    }
+        if (!currentUserId) {
+            alert("🔒 Please login first to access premium blogs!");
+            return;
+        }
 
-    const hasPaid = blog.purchasedBy && blog.purchasedBy.includes(currentUserId);
+        const hasPaid = blog.purchasedBy && blog.purchasedBy.includes(currentUserId);
 
-    if (hasPaid) {
-        navigate(`/blog/${blog._id}`); 
-    } else {
-        alert(`🔒 This is a Premium Post!\n\nAapko is blog ko parhne ke liye $${blog.price} pay karna hoga.`);
-        // Yahan aap apna Stripe checkout handler call kar sakte hain
-    }
-};
+        if (hasPaid) {
+            navigate(`/blog/${blog._id}`);
+        } else {
+
+
+            // Stripe checkout 
+            try {
+                alert(`🔒 Redirection to Stripe... Aapko is blog ko parhne ke liye $${blog.price} pay karna hoga.`);
+
+                // Backend endpoint ko hit karein session create karne ke liye
+                const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/create-checkout-session`, {
+                    blogId: blog._id,
+                    userId: currentUserId
+                });
+
+                if (response.data.url) {
+                    window.location.href = response.data.url;
+                }
+
+            } catch (error) {
+                console.error("Payment initiation failed:", error);
+                alert("Something went wrong with the payment gateway.");
+            }
+
+
+
+        }
+    };
 
     if (loading) {
         return (
