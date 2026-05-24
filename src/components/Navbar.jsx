@@ -32,7 +32,7 @@ const Navbar = () => {
           <div className="hidden md:flex space-x-8 font-medium text-gray-700">
             <Link to="/" className="hover:text-indigo-600 transition duration-200">Home</Link>
             <Link to="/about" className="hover:text-indigo-600 transition duration-200">About Us</Link>
-            <Link to="/blog" className="hover:text-indigo-600 transition duration-200">Blog</Link>
+            <Link to="/blogs" className="hover:text-indigo-600 transition duration-200">Blog</Link>
             <Link to="/posts" className="hover:text-indigo-600 transition duration-200">Posts</Link>
             <Link to="/faqs" className="hover:text-indigo-600 transition duration-200">FAQs</Link>
           </div>

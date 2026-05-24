@@ -6,24 +6,40 @@ const EditBlogModal = ({ isOpen, onClose, blogData, onUpdateSuccess }) => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [imageFile, setImageFile] = useState(null);
-    const [previewUrl, setPreviewUrl] = useState(''); // 👈 Live preview ke liye state
+    const [previewUrl, setPreviewUrl] = useState(''); 
     const [updateLoading, setUpdateLoading] = useState(false);
+
+    // --- New States for Premium Control ---
+    const [isPaid, setIsPaid] = useState(false);
+    const [price, setPrice] = useState('');
 
     useEffect(() => {
         if (blogData) {
             setTitle(blogData.title || '');
             setContent(blogData.content || '');
             setImageFile(null); 
-            setPreviewUrl(blogData.image || ''); // 👈 Pehle se majood purani image ka URL set kiya
+            setPreviewUrl(blogData.image || '');
+            
+            // Populate old status directly from active database schema info
+            setIsPaid(blogData.isPaid || false);
+            setPrice(blogData.price || '');
         }
     }, [blogData]);
 
-    // Jab user naye file select kare, to uska temporary URL bana kar preview dikhana
+    // Handle dynamic checkbox action with safety clear logic
+    const handleToggleChange = (e) => {
+        const checked = e.target.checked;
+        setIsPaid(checked);
+        if (!checked) {
+            setPrice(''); // Clear pricing information directly on state drop
+        }
+    };
+
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
             setImageFile(file);
-            setPreviewUrl(URL.createObjectURL(file)); // 👈 Naye image ka preview generate karega
+            setPreviewUrl(URL.createObjectURL(file)); 
         }
     };
 
@@ -38,9 +54,9 @@ const EditBlogModal = ({ isOpen, onClose, blogData, onUpdateSuccess }) => {
             const formData = new FormData();
             formData.append('title', title);
             formData.append('content', content);
+            formData.append('isPaid', isPaid);
+            formData.append('price', isPaid ? price : 0); // Send zero if toggle was explicitly removed
             
-            // Agar naye image file select ki hai to hi append hogi, 
-            // warna backend purani image ko hi barkarar rakhega.
             if (imageFile) {
                 formData.append('image', imageFile); 
             }
@@ -105,13 +121,55 @@ const EditBlogModal = ({ isOpen, onClose, blogData, onUpdateSuccess }) => {
                         ></textarea>
                     </div>
 
+                    {/* ==================== PREMIUM CONTROLS WITHIN EDIT HOOK ==================== */}
+                    <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <label htmlFor="editIsPaid" className="text-sm font-semibold text-slate-800 block">
+                                    Premium Article (Paid)
+                                </label>
+                                <p className="text-[11px] text-slate-500">Stripe authorization rules look at this checkpoint status flag.</p>
+                            </div>
+                            
+                            <label className="inline-flex items-center cursor-pointer relative select-none">
+                                <input
+                                    id="editIsPaid"
+                                    type="checkbox"
+                                    name="isPaid"
+                                    checked={isPaid}
+                                    onChange={handleToggleChange}
+                                    className="sr-only peer"
+                                />
+                                <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                            </label>
+                        </div>
+
+                        {isPaid && (
+                            <div className="pt-2 border-t border-slate-200 animate-fadeIn">
+                                <label className="block text-sm font-semibold text-slate-700 mb-1">
+                                    Price (USD $)
+                                </label>
+                                <input
+                                    type="number"
+                                    value={price}
+                                    onChange={(e) => setPrice(e.target.value)}
+                                    placeholder="Enter premium tier price"
+                                    min="1"
+                                    step="0.01"
+                                    required={isPaid}
+                                    className="w-full sm:w-1/2 px-3 py-1.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                                />
+                            </div>
+                        )}
+                    </div>
+                    {/* =========================================================================== */}
+
                     {/* Image Section with Preview */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Blog Cover Image
                         </label>
                         
-                        {/* 🖼️ Preview Box (Purani image ya naye select ki hui image dikhayega) */}
                         {previewUrl && (
                             <div className="mb-3 relative rounded-lg overflow-hidden border border-gray-200 bg-gray-50 h-36 w-full flex items-center justify-center">
                                 <img 
@@ -128,7 +186,7 @@ const EditBlogModal = ({ isOpen, onClose, blogData, onUpdateSuccess }) => {
                         <input 
                             type="file" 
                             accept="image/*"
-                            onChange={handleImageChange} // 👈 Custom handler lagaya preview ke liye
+                            onChange={handleImageChange}
                             className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
                         />
                         <p className="text-[11px] text-gray-400 mt-1">Agar image tabdeel nahi karni, to is field ko khali chor dein.</p>

@@ -6,12 +6,17 @@ const CreateBlog = () => {
     title: '',
     content: '',
     image: null,
+    isPaid: false,  
+    price: '',
   });
   const [preview, setPreview] = useState('');
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({ 
+      ...prev, 
+      [name]: type === 'checkbox' ? checked : value 
+    }));
   };
 
   const handleImageChange = (e) => {
@@ -22,35 +27,45 @@ const CreateBlog = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await Api.post('/blog/create', formData, {
+      const dataToSend = new FormData();
+      dataToSend.append('title', formData.title);
+      dataToSend.append('content', formData.content);
+      dataToSend.append('image', formData.image);
+      dataToSend.append('isPaid', formData.isPaid);
+      
+      if (formData.isPaid) {
+        dataToSend.append('price', formData.price);
+      }
+
+      const response = await Api.post('/blog/create', dataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
-      })
+      });
 
-
+      // Form reset logic
       setFormData({
         title: '',
         content: '',
         image: null,
-      })
-
-      setPreview("")
+        isPaid: false,
+        price: '',
+      });
+      setPreview("");
+      
     } catch (error) {
-      console.log(error);
-
+      console.log("Error dynamic creation:", error);
     }
-
   };
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-md border border-slate-100">
       <h2 className="text-2xl font-bold text-slate-800 mb-6">Create New Blog Post</h2>
 
-      <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-5">
         <div>
           <label className="block text-sm font-semibold text-slate-700 mb-1">
             Blog Title
@@ -80,6 +95,52 @@ const CreateBlog = () => {
             className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition resize-none"
           />
         </div>
+
+        {/* ==================== STRIPE PREMIUM CONTROLS ==================== */}
+        <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <label htmlFor="isPaid" className="text-sm font-semibold text-slate-800 block">
+                Premium Article (Paid)
+              </label>
+              <p className="text-xs text-slate-500">Enable this option to lock this blog via Stripe paywall.</p>
+            </div>
+            
+            {/* Smooth Tailwind Toggle Switch */}
+            <label className="inline-flex items-center cursor-pointer relative select-none">
+              <input
+                id="isPaid"
+                type="checkbox"
+                name="isPaid"
+                checked={formData.isPaid}
+                onChange={handleChange}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+            </label>
+          </div>
+
+          {/* Conditional Animation/Rendering for Price Input */}
+          {formData.isPaid && (
+            <div className="pt-2 border-t border-slate-200 animate-fadeIn">
+              <label className="block text-sm font-semibold text-slate-700 mb-1">
+                Set Price (USD $)
+              </label>
+              <input
+                type="number"
+                name="price"
+                value={formData.price}
+                onChange={handleChange}
+                placeholder="Minimum $1.00"
+                min="1"
+                step="0.01"
+                required={formData.isPaid} // Agar isPaid true hai, tabhi required hoga
+                className="w-full sm:w-1/2 px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+              />
+            </div>
+          )}
+        </div>
+        {/* ================================================================= */}
 
         <div>
           <label className="block text-sm font-semibold text-slate-700 mb-1">
@@ -117,6 +178,7 @@ const CreateBlog = () => {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
+                    value=""
                   />
                 </svg>
                 <div className="text-sm text-slate-600">
@@ -135,6 +197,8 @@ const CreateBlog = () => {
           Publish Post
         </button>
       </form>
+
+
     </div>
   );
 };

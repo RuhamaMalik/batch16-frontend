@@ -22,16 +22,18 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
 
     const adminTabs = [
         { name: "Dashboard", icon: <MdOutlineDashboard />, path: "/admin/dashboard" },
-        { name: "Categories", icon: <FaRegHeart />, path: "/admin/categories" },
-        { name: "Products", icon: <MdOutlineInventory2 />, path: "/admin/products" },
-        { name: "Customers", icon: <IoPeopleOutline />, path: "/admin/customers" },
+        { name: "Users", icon: <IoPeopleOutline />, path: "/admin/users" },
+        { name: "Blogs", icon: <MdOutlineInventory2 />, path: "/admin/blogs" },
+
+         { name: "Create Blog", icon: <FaRegHeart />, path: "/dashboard/create-blog" },
+        { name: "My Blogs", icon: <TbBrandGoogleAnalytics />, path: "/dashboard/my-blog" },
     ];
 
     const userTabs = [
         { name: "Account Settings", icon: <MdOutlineDashboard />, path: "/dashboard/account-settings" },
         { name: "Address", icon: <LuMessageSquareText />, path: "/dashboard/address" },
         { name: "Change Password", icon: <TbBrandGoogleAnalytics />, path: "/dashboard/change-password" },
-        { name: "Create Blog", icon: <TbBrandGoogleAnalytics />, path: "/dashboard/create-blog" },
+        { name: "Create Blog", icon: <FaRegHeart />, path: "/dashboard/create-blog" },
         { name: "My Blogs", icon: <TbBrandGoogleAnalytics />, path: "/dashboard/my-blog" },
     ];
 

@@ -11,6 +11,10 @@ import AuthForm from '../components/AuthForm';
 import CreateBlog from '../components/dashboard/user/CreateBlog';
 import MyBlogs from '../components/dashboard/user/MyBlogs';
 import BlogDetail from '../components/BlogDetail';
+import Blogs from '../components/dashboard/admin/Blogs';
+import Users from '../components/dashboard/admin/Users';
+import BlogsPage from '../pages/Blog';
+import AboutPage from '../pages/About';
 
 const router = createBrowserRouter([
     {
@@ -30,14 +34,31 @@ const router = createBrowserRouter([
                     <ForgotPswd />
                 ),
             },
-                  {
+            {
                 path: 'reset-password/:token',
                 element: (
                     <ResetPaswd />
                 ),
             },
-             
-           
+            {
+                path: 'blogs',
+                element: (
+                    <BlogsPage />
+                ),
+            },
+            {
+                path: 'blog/:id',
+                element: <BlogDetail />
+
+            },
+            {
+                path: 'about',
+                element: (
+                    <AboutPage />
+                ),
+            },
+
+
 
         ],
     },
@@ -58,31 +79,31 @@ const router = createBrowserRouter([
                 ),
             },
             {
-                path:'create-blog',
-                element:<CreateBlog/>
-                
+                path: 'create-blog',
+                element: <CreateBlog />
+
             },
-              
+
             {
-                path:'my-blog',
-                element:<MyBlogs/>
-                
+                path: 'my-blog',
+                element: <MyBlogs />
+
             },
-              
+
             {
-                path:'blog/:id',
-                element:<BlogDetail/>
-                
+                path: 'blog/:id',
+                element: <BlogDetail />
+
             },
-              
-      
-          
-          
+
+
+
+
 
         ],
     },
 
-    
+
     ////////// ADMIN 
 
     {
@@ -103,6 +124,33 @@ const router = createBrowserRouter([
                 path: "dashboard", element: (
                     <Dashboard />
                 ),
+            },
+            {
+                path: 'create-blog',
+                element: <CreateBlog />
+
+            },
+
+            {
+                path: 'my-blog',
+                element: <MyBlogs />
+
+            },
+            {
+                path: 'blogs',
+                element: <Blogs />
+
+            },
+             {
+                path: 'blog/:id',
+                element: <BlogDetail />
+
+            },
+
+            {
+                path: 'users',
+                element: <Users />
+
             },
         ]
     },
